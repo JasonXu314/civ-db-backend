@@ -11,6 +11,7 @@ COPY src .
 COPY tsconfig.json .
 COPY tsconfig.build.json .
 COPY .eslintrc.js .
+COPY nest-cli.json .
 
 ENV PORT=5000
 

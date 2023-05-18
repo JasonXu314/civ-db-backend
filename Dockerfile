@@ -7,7 +7,7 @@ COPY yarn.lock .
 
 RUN yarn install
 
-COPY src .
+COPY src src
 COPY tsconfig.json .
 COPY tsconfig.build.json .
 COPY .eslintrc.js .

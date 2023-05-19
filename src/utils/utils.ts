@@ -115,7 +115,11 @@ export function deepMerge<T>(obj: T, updates: DeepPartial<T>): T {
 		const value = obj[prop];
 
 		if (typeof value === 'object') {
-			copy[prop] = deepMerge(copy[prop], updates[prop]);
+			if (Array.isArray(value)) {
+				copy[prop] = updates[prop];
+			} else {
+				copy[prop] = deepMerge(copy[prop], updates[prop]);
+			}
 		} else {
 			copy[prop] = updates[prop];
 		}

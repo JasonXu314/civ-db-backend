@@ -48,7 +48,10 @@ export class UnitsController {
 	@Post('/data')
 	@UseGuards(AuthGuard)
 	@UseInterceptors(FileInterceptor('icon'), FormDataInterceptor)
-	public async createUnit(@Body() unit: CreateUnitDTO, @UploadedFile() file: Express.Multer.File): Promise<WithId<Unit>> {
+	public async createUnit(
+		@Body(new IDPipe('replaces', 'unlockedBy', 'obsoletedBy', 'upgradesFrom', 'upgradesTo')) unit: CreateUnitDTO,
+		@UploadedFile() file: Express.Multer.File
+	): Promise<WithId<Unit>> {
 		const fd = new FormData();
 		fd.append('file', file.buffer, { contentType: file.mimetype, filename: file.originalname });
 

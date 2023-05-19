@@ -1,38 +1,18 @@
 import { Type } from 'class-transformer';
 import { IsBoolean, IsIn, IsInt, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { ERAS, Era } from 'src/utils/common';
 import { MultiReferenceExpansionRecord, Nullable, ReferenceExpansionRecord, ResourceExpansionRecord, StatExpansionRecord, forceInit } from 'src/utils/utils';
-import { Era, PromotionClass } from './units.model';
+import { PROMOTION_CLASSES, PromotionClass } from './units.model';
 
 export class CreateUnitDTO {
 	@IsString()
 	@IsNotEmpty()
 	name: string = forceInit();
 
-	@IsIn([
-		'Recon',
-		'Melee',
-		'Ranged',
-		'Anti-Cavalry',
-		'Light Cavalry',
-		'Heavy Cavalry',
-		'Siege',
-		'Naval Melee',
-		'Naval Ranged',
-		'Naval Raider',
-		'Naval Carrier',
-		'Fighter',
-		'Bomber',
-		'Warrior Monks',
-		'Nihang',
-		'Apostles',
-		'Spies',
-		'Rock Bands',
-		'Giant Death Robots',
-		'Soothsayers'
-	])
+	@IsIn(PROMOTION_CLASSES)
 	promotionClass: PromotionClass = forceInit();
 
-	@IsIn(['Ancient', 'Classical', 'Medieval', 'Renaissance', 'Industrial', 'Modern', 'Atomic', 'Information'])
+	@IsIn(ERAS)
 	era: Era = forceInit();
 
 	@Type(() => StatExpansionRecord)
@@ -102,32 +82,11 @@ export class UpdateUnitDTO {
 	@IsOptional()
 	name?: string;
 
-	@IsIn([
-		'Recon',
-		'Melee',
-		'Ranged',
-		'Anti-Cavalry',
-		'Light Cavalry',
-		'Heavy Cavalry',
-		'Siege',
-		'Naval Melee',
-		'Naval Ranged',
-		'Naval Raider',
-		'Naval Carrier',
-		'Fighter',
-		'Bomber',
-		'Warrior Monks',
-		'Nihang',
-		'Apostles',
-		'Spies',
-		'Rock Bands',
-		'Giant Death Robots',
-		'Soothsayers'
-	])
+	@IsIn(PROMOTION_CLASSES)
 	@IsOptional()
 	promotionClass?: PromotionClass;
 
-	@IsIn(['Ancient', 'Classical', 'Medieval', 'Renaissance', 'Industrial', 'Modern', 'Atomic', 'Information'])
+	@IsIn(ERAS)
 	@IsOptional()
 	era?: Era;
 

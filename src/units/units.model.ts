@@ -1,5 +1,6 @@
 import { Type } from 'class-transformer';
 import { IsBoolean, IsIn, IsInt, IsNotEmpty, IsString, IsUrl } from 'class-validator';
+import { ERAS, Era } from 'src/utils/common';
 import { MultiReferenceExpansionRecord, Nullable, ReferenceExpansionRecord, ResourceExpansionRecord, StatExpansionRecord, forceInit } from 'src/utils/utils';
 
 export type PromotionClass =
@@ -23,39 +24,38 @@ export type PromotionClass =
 	| 'Rock Bands'
 	| 'Giant Death Robots'
 	| 'Soothsayers';
-
-export type Era = 'Ancient' | 'Classical' | 'Medieval' | 'Renaissance' | 'Industrial' | 'Modern' | 'Atomic' | 'Information';
+export const PROMOTION_CLASSES = [
+	'Recon',
+	'Melee',
+	'Ranged',
+	'Anti-Cavalry',
+	'Light Cavalry',
+	'Heavy Cavalry',
+	'Siege',
+	'Naval Melee',
+	'Naval Ranged',
+	'Naval Raider',
+	'Naval Carrier',
+	'Fighter',
+	'Bomber',
+	'Warrior Monks',
+	'Nihang',
+	'Apostles',
+	'Spies',
+	'Rock Bands',
+	'Giant Death Robots',
+	'Soothsayers'
+];
 
 export class Unit {
 	@IsString()
 	@IsNotEmpty()
 	name: string = forceInit();
 
-	@IsIn([
-		'Recon',
-		'Melee',
-		'Ranged',
-		'Anti-Cavalry',
-		'Light Cavalry',
-		'Heavy Cavalry',
-		'Siege',
-		'Naval Melee',
-		'Naval Ranged',
-		'Naval Raider',
-		'Naval Carrier',
-		'Fighter',
-		'Bomber',
-		'Warrior Monks',
-		'Nihang',
-		'Apostles',
-		'Spies',
-		'Rock Bands',
-		'Giant Death Robots',
-		'Soothsayers'
-	])
+	@IsIn(PROMOTION_CLASSES)
 	promotionClass: PromotionClass = forceInit();
 
-	@IsIn(['Ancient', 'Classical', 'Medieval', 'Renaissance', 'Industrial', 'Modern', 'Atomic', 'Information'])
+	@IsIn(ERAS)
 	era: Era = forceInit();
 
 	@Type(() => StatExpansionRecord)

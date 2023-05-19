@@ -19,7 +19,7 @@ export class UnitsController {
 		this._logger = new ConsoleLogger();
 	}
 
-	@Get()
+	@Get('/data')
 	public async getUnits(@Query(IDPipe) { id }: IDDTO): Promise<WithId<Unit>[] | WithId<Unit>> {
 		if (id) {
 			const unit = await this.units.getById(id);
@@ -34,7 +34,7 @@ export class UnitsController {
 		return this.units.get();
 	}
 
-	@Get('/:id')
+	@Get('/data/:id')
 	public async getUnitById(@Param(IDPipe) { id }: IDRequiredDTO): Promise<WithId<Unit>> {
 		const unit = await this.units.getById(id);
 
@@ -45,7 +45,7 @@ export class UnitsController {
 		}
 	}
 
-	@Post()
+	@Post('/data')
 	@UseGuards(AuthGuard)
 	@UseInterceptors(FileInterceptor('icon'), FormDataInterceptor)
 	public async createUnit(@Body() unit: CreateUnitDTO, @UploadedFile() file: Express.Multer.File): Promise<WithId<Unit>> {
@@ -64,7 +64,7 @@ export class UnitsController {
 		}
 	}
 
-	@Patch('/:id')
+	@Patch('/data/:id')
 	@UseGuards(AuthGuard)
 	@UseInterceptors(FileInterceptor('icon'), FormDataInterceptor)
 	public async updateUnit(

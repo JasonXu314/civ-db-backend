@@ -9,9 +9,9 @@ export class AuthGuard implements CanActivate {
 	public canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean> {
 		const req = context.switchToHttp().getRequest<Request>();
 
-		this._logger.log(`Received auth attempt with cookie ${req.cookies['civdb:secret']}`);
+		this._logger.log(`Received auth attempt with secret ${req.query.secret}`);
 
-		return req.cookies['civdb:secret'] === process.env.SECRET;
+		return req.query.secret === process.env.SECRET;
 	}
 }
 

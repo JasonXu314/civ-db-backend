@@ -1,6 +1,6 @@
 import { Type } from 'class-transformer';
 import { IsBoolean, IsIn, IsInt, IsNotEmpty, IsOptional, IsString } from 'class-validator';
-import { ERAS, Era } from 'src/utils/common';
+import { DLCString, DLC_STRINGS, ERAS, Era } from 'src/utils/common';
 import { MultiReferenceExpansionRecord, Nullable, ReferenceExpansionRecord, ResourceExpansionRecord, StatExpansionRecord, forceInit } from 'src/utils/utils';
 import { PROMOTION_CLASSES, PromotionClass } from './units.model';
 
@@ -74,6 +74,9 @@ export class CreateUnitDTO {
 
 	@Type(() => MultiReferenceExpansionRecord)
 	upgradesTo: MultiReferenceExpansionRecord = forceInit();
+
+	@IsIn(DLC_STRINGS)
+	addedBy: DLCString = forceInit();
 }
 
 export class UpdateUnitDTO {
@@ -168,5 +171,9 @@ export class UpdateUnitDTO {
 	@Type(() => MultiReferenceExpansionRecord)
 	@IsOptional()
 	upgradesTo?: MultiReferenceExpansionRecord;
+
+	@IsIn(DLC_STRINGS)
+	@IsOptional()
+	addedBy: DLCString = forceInit();
 }
 

@@ -1,6 +1,6 @@
 import { Type } from 'class-transformer';
 import { IsBoolean, IsIn, IsInt, IsNotEmpty, IsString, IsUrl } from 'class-validator';
-import { ERAS, Era } from 'src/utils/common';
+import { DLCString, DLC_STRINGS, ERAS, Era } from 'src/utils/common';
 import { MultiReferenceExpansionRecord, Nullable, ReferenceExpansionRecord, ResourceExpansionRecord, StatExpansionRecord, forceInit } from 'src/utils/utils';
 
 export type PromotionClass =
@@ -120,5 +120,8 @@ export class Unit {
 
 	@Type(() => MultiReferenceExpansionRecord)
 	upgradesTo: MultiReferenceExpansionRecord = forceInit();
+
+	@IsIn(DLC_STRINGS)
+	addedBy: DLCString = forceInit();
 }
 

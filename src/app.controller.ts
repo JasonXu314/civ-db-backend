@@ -16,6 +16,7 @@ export class AppController {
 	public getCookie(@Res() res: Response, @Query('secret') secret: string): void {
 		if (secret === process.env.SECRET) {
 			res.setHeader('Set-Cookie', `civdb:secret=${process.env.SECRET}`);
+			res.send();
 		} else {
 			throw new ForbiddenException('Incorrect token');
 		}

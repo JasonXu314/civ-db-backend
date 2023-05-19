@@ -1,6 +1,6 @@
 import { Type } from 'class-transformer';
 import { IsBoolean, IsIn, IsInt, IsNotEmpty, IsOptional, IsString } from 'class-validator';
-import { MultiReferenceExpansionRecord, Nullable, ReferenceExpansionRecord, StatExpansionRecord, forceInit } from 'src/utils/utils';
+import { MultiReferenceExpansionRecord, Nullable, ReferenceExpansionRecord, ResourceExpansionRecord, StatExpansionRecord, forceInit } from 'src/utils/utils';
 import { Era, PromotionClass } from './units.model';
 
 export class CreateUnitDTO {
@@ -43,6 +43,12 @@ export class CreateUnitDTO {
 
 	@Type(() => StatExpansionRecord)
 	maintenance: StatExpansionRecord = forceInit();
+
+	@Type(() => ResourceExpansionRecord)
+	resource: ResourceExpansionRecord = forceInit();
+
+	@Type(() => ResourceExpansionRecord)
+	maintenanceResource: ResourceExpansionRecord = forceInit();
 
 	@IsBoolean()
 	unique: boolean = forceInit();
@@ -137,6 +143,14 @@ export class UpdateUnitDTO {
 	@IsOptional()
 	maintenance?: StatExpansionRecord;
 
+	@Type(() => ResourceExpansionRecord)
+	@IsOptional()
+	resource?: ResourceExpansionRecord = forceInit();
+
+	@Type(() => ResourceExpansionRecord)
+	@IsOptional()
+	maintenanceResource?: ResourceExpansionRecord = forceInit();
+
 	@IsBoolean()
 	@IsOptional()
 	unique?: boolean;
@@ -196,3 +210,4 @@ export class UpdateUnitDTO {
 	@IsOptional()
 	upgradesTo?: MultiReferenceExpansionRecord;
 }
+

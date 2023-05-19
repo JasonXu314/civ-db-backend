@@ -1,6 +1,6 @@
 import { Type } from 'class-transformer';
 import { IsBoolean, IsIn, IsInt, IsNotEmpty, IsString, IsUrl } from 'class-validator';
-import { MultiReferenceExpansionRecord, Nullable, ReferenceExpansionRecord, StatExpansionRecord, forceInit } from 'src/utils/utils';
+import { MultiReferenceExpansionRecord, Nullable, ReferenceExpansionRecord, ResourceExpansionRecord, StatExpansionRecord, forceInit } from 'src/utils/utils';
 
 export type PromotionClass =
 	| 'Recon'
@@ -66,6 +66,12 @@ export class Unit {
 
 	@Type(() => StatExpansionRecord)
 	maintenance: StatExpansionRecord = forceInit();
+
+	@Type(() => ResourceExpansionRecord)
+	resource: ResourceExpansionRecord = forceInit();
+
+	@Type(() => ResourceExpansionRecord)
+	maintenanceResource: ResourceExpansionRecord = forceInit();
 
 	@IsUrl()
 	icon: string = forceInit();

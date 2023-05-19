@@ -1,5 +1,9 @@
-import { IsInt, IsMongoId, IsOptional, ValidateIf } from 'class-validator';
+import { Type } from 'class-transformer';
+import { IsIn, IsInt, IsMongoId, IsOptional, ValidateIf } from 'class-validator';
 import { ObjectId } from 'mongodb';
+
+export type Resource = 'Horses' | 'Iron' | 'Niter' | 'Coal' | 'Oil' | 'Aluminum' | 'Uranium';
+export const RESOURCES = ['Horses', 'Iron', 'Niter', 'Coal', 'Oil', 'Aluminum', 'Uranium'] as const;
 
 export type DeepPartial<T> = {
 	[K in Extract<keyof T, string>]?: T[K] extends object ? DeepPartial<T[K]> : T[K];
@@ -46,6 +50,28 @@ export class StatExpansionRecord {
 	gs: number | null = forceInit();
 }
 
+export class ResourceRequirement {
+	@IsIn(RESOURCES)
+	resource: Resource = forceInit();
+
+	@IsInt()
+	quantity: number = forceInit();
+}
+
+export class ResourceExpansionRecord {
+	@Type(() => ResourceRequirement)
+	@Nullable()
+	base: ResourceRequirement | null = forceInit();
+
+	@Type(() => ResourceRequirement)
+	@Nullable()
+	rf: ResourceRequirement | null = forceInit();
+
+	@Type(() => ResourceRequirement)
+	@Nullable()
+	gs: ResourceRequirement | null = forceInit();
+}
+
 export class ReferenceExpansionRecord {
 	@IsMongoId()
 	@Nullable()
@@ -80,6 +106,9 @@ export function Nullable() {
 }
 
 export function deepMerge<T>(obj: T, updates: DeepPartial<T>): T {
+	if (!updates) return updates === null ? (null as T) : obj ? { ...obj } : obj;
+	if (!obj) return updates ? ({ ...updates } as T) : updates;
+
 	const copy = { ...obj };
 
 	for (const prop in updates) {

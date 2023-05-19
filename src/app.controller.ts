@@ -1,5 +1,6 @@
-import { Body, Controller, Get, Post, UnauthorizedException } from '@nestjs/common';
+import { Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { AppService } from './app.service';
+import { AuthGuard } from './utils/guards/auth.guard';
 
 @Controller()
 export class AppController {
@@ -11,10 +12,7 @@ export class AppController {
 	}
 
 	@Post('/auth')
-	public auth(@Body('secret') secret: string): void {
-		if (secret !== process.env.SECRET) {
-			throw new UnauthorizedException();
-		}
-	}
+	@UseGuards(AuthGuard)
+	public auth(): void {}
 }
 

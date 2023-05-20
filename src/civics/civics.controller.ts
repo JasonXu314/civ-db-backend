@@ -22,30 +22,28 @@ import { AuthGuard } from 'src/utils/guards/auth.guard';
 import { FormDataInterceptor } from 'src/utils/interceptors/FormData.interceptor';
 import { IDPipe } from 'src/utils/pipes/id.pipe';
 import { DeepPartial, IDDTO, IDRequiredDTO, IDWithSearchDTO } from 'src/utils/utils';
-import { TechnologiesService } from './technologies.service';
-import { CreateTechnologyDTO, UpdateTechnologyDTO } from './technology.dto';
-import { MarshalledTechnology, Technology } from './technology.model';
+import { CreateCivicDTO, UpdateCivicDTO } from './civic.dto';
+import { Civic, MarshalledCivic } from './civic.model';
+import { CivicsService } from './civics.service';
 
-@Controller('/technologies')
-export class TechnologiesController {
+@Controller('/civics')
+export class CivicsController {
 	private _logger: ConsoleLogger;
 
-	constructor(private readonly technologies: TechnologiesService) {
-		this._logger = new ConsoleLogger('Technologies Controller');
+	constructor(private readonly civics: CivicsService) {
+		this._logger = new ConsoleLogger('Civics Controller');
 	}
 
 	@Get()
-	public async getMarshalledTechnologies(
-		@Query(IDPipe) { id, query }: IDWithSearchDTO
-	): Promise<WithId<MarshalledTechnology>[] | WithId<MarshalledTechnology>> {
+	public async getMarshalledCivics(@Query(IDPipe) { id, query }: IDWithSearchDTO): Promise<WithId<MarshalledCivic>[] | WithId<MarshalledCivic>> {
 		if (id) {
-			const tech = await this.technologies.getById(id);
+			const civic = await this.civics.getById(id);
 
-			if (!tech) {
+			if (!civic) {
 				throw new NotFoundException(`Technology with id ${id} does not exist`);
 			} else {
 				try {
-					return await this.technologies.marshal(tech);
+					return await this.civics.marshal(civic);
 				} catch (err: unknown) {
 					if (err instanceof MarshallingError) {
 						throw new InternalServerErrorException(typeof err.cause === 'string' ? err.cause : err.cause.message);
@@ -56,13 +54,13 @@ export class TechnologiesController {
 				}
 			}
 		} else if (query) {
-			const tech = await this.technologies.search(query);
+			const civic = await this.civics.search(query);
 
-			if (!tech) {
+			if (!civic) {
 				throw new NotFoundException(`Technology with id ${id} does not exist`);
 			} else {
 				try {
-					return await this.technologies.marshal(tech);
+					return await this.civics.marshal(civic);
 				} catch (err: unknown) {
 					if (err instanceof MarshallingError) {
 						throw new InternalServerErrorException(typeof err.cause === 'string' ? err.cause : err.cause.message);
@@ -75,7 +73,7 @@ export class TechnologiesController {
 		}
 
 		try {
-			return await this.technologies.marshal(await this.technologies.get());
+			return await this.civics.marshal(await this.civics.get());
 		} catch (err: unknown) {
 			if (err instanceof MarshallingError) {
 				throw new InternalServerErrorException(typeof err.cause === 'string' ? err.cause : err.cause.message);
@@ -87,26 +85,26 @@ export class TechnologiesController {
 	}
 
 	@Get('/data')
-	public async getTechnologies(@Query(IDPipe) { id }: IDDTO): Promise<WithId<Technology>[] | WithId<Technology>> {
+	public async getCivics(@Query(IDPipe) { id }: IDDTO): Promise<WithId<Civic>[] | WithId<Civic>> {
 		if (id) {
-			const tech = await this.technologies.getById(id);
+			const tech = await this.civics.getById(id);
 
 			if (!tech) {
-				throw new NotFoundException(`Technology with id ${id} does not exist`);
+				throw new NotFoundException(`Civic with id ${id} does not exist`);
 			} else {
 				return tech;
 			}
 		}
 
-		return this.technologies.get();
+		return this.civics.get();
 	}
 
 	@Get('/data/:id')
-	public async getTechnologyById(@Param(IDPipe) { id }: IDRequiredDTO): Promise<WithId<Technology>> {
-		const tech = await this.technologies.getById(id);
+	public async getCivicById(@Param(IDPipe) { id }: IDRequiredDTO): Promise<WithId<Civic>> {
+		const tech = await this.civics.getById(id);
 
 		if (!tech) {
-			throw new NotFoundException(`Technology with id ${id} does not exist`);
+			throw new NotFoundException(`Civic with id ${id} does not exist`);
 		} else {
 			return tech;
 		}
@@ -115,34 +113,34 @@ export class TechnologiesController {
 	@Post('/data')
 	@UseGuards(AuthGuard)
 	@UseInterceptors(FileInterceptor('icon'), FormDataInterceptor)
-	public async createTechnology(
-		@Body(new IDPipe('replaces', 'unlockedBy', 'obsoletedBy', 'upgradesFrom', 'upgradesTo')) tech: CreateTechnologyDTO,
+	public async createCivic(
+		@Body(new IDPipe('replaces', 'unlockedBy', 'obsoletedBy', 'upgradesFrom', 'upgradesTo')) civic: CreateCivicDTO,
 		@UploadedFile() file: Express.Multer.File
-	): Promise<WithId<Technology>> {
+	): Promise<WithId<Civic>> {
 		const fd = new FormData();
 		fd.append('file', file.buffer, { contentType: file.mimetype, filename: file.originalname });
 
 		const iconId = (await axios.post<string>(`${process.env.CDN_URL}`, fd)).data;
 
-		const newId = await this.technologies.create({ ...tech, icon: `${process.env.CDN_URL}/${iconId}` });
-		const newTech = await this.technologies.getById(newId);
+		const newId = await this.civics.create({ ...civic, icon: `${process.env.CDN_URL}/${iconId}` });
+		const newCivic = await this.civics.getById(newId);
 
-		if (!newTech) {
+		if (!newCivic) {
 			throw new NotFoundException('Failed to insert new technology');
 		} else {
-			return newTech;
+			return newCivic;
 		}
 	}
 
 	@Patch('/data/:id')
 	@UseGuards(AuthGuard)
 	@UseInterceptors(FileInterceptor('icon'), FormDataInterceptor)
-	public async updateTechnology(
+	public async updateCivic(
 		@Param(IDPipe) { id }: IDRequiredDTO,
-		@Body(new IDPipe('replaces', 'unlockedBy', 'obsoletedBy', 'upgradesFrom', 'upgradesTo')) tech: UpdateTechnologyDTO,
+		@Body(new IDPipe('replaces', 'unlockedBy', 'obsoletedBy', 'upgradesFrom', 'upgradesTo')) civic: UpdateCivicDTO,
 		@UploadedFile() file: Express.Multer.File
-	): Promise<WithId<Technology>> {
-		const updates: DeepPartial<Technology> = { ...tech };
+	): Promise<WithId<Civic>> {
+		const updates: DeepPartial<Civic> = { ...civic };
 
 		if (file) {
 			const fd = new FormData();
@@ -152,7 +150,7 @@ export class TechnologiesController {
 			updates.icon = `${process.env.CDN_URL}/${iconId}`;
 		}
 
-		const updatedTech = await this.technologies.update(id, updates);
+		const updatedTech = await this.civics.update(id, updates);
 
 		if (!updatedTech) {
 			throw new NotFoundException('Failed to insert new technology');

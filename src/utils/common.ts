@@ -120,6 +120,18 @@ export class MultiReferenceDLCRecord {
 	gs: ObjectId[] = forceInit();
 }
 
+export class MarshallingError extends Error {
+	public constructor(public readonly cause: Error | string) {
+		super(typeof cause === 'string' ? cause : cause.message);
+	}
+}
+
+export class PrerequisiteError extends Error {
+	public constructor(dlc: DLCString, ids: ObjectId[]) {
+		super(`Unable to get ${dlc.toUpperCase()} prerequisite(s) ${ids.map((id) => id.toHexString()).join(', ')}`);
+	}
+}
+
 export function dlcValue(dlc: DLCString): DLC {
 	switch (dlc) {
 		case 'base':

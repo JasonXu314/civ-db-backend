@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ObjectId, WithId } from 'mongodb';
 import { DBService } from 'src/db/db.service';
 import { DeepPartial, deepMerge } from 'src/utils/utils';
-import { Unit } from './units.model';
+import { Unit } from './unit.model';
 
 @Injectable()
 export class UnitsService {

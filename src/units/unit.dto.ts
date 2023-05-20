@@ -2,7 +2,7 @@ import { Type } from 'class-transformer';
 import { IsBoolean, IsIn, IsInt, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { DLCString, DLC_STRINGS, ERAS, Era, MultiReferenceDLCRecord, ReferenceDLCRecord, ResourceDLCRecord, StatDLCRecord } from 'src/utils/common';
 import { Nullable, forceInit } from 'src/utils/utils';
-import { PROMOTION_CLASSES, PromotionClass } from './units.model';
+import { PROMOTION_CLASSES, PromotionClass } from './unit.model';
 
 export class CreateUnitDTO {
 	@IsString()

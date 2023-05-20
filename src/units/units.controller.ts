@@ -7,8 +7,8 @@ import { AuthGuard } from 'src/utils/guards/auth.guard';
 import { FormDataInterceptor } from 'src/utils/interceptors/FormData.interceptor';
 import { IDPipe } from 'src/utils/pipes/id.pipe';
 import { DeepPartial, IDDTO, IDRequiredDTO } from 'src/utils/utils';
-import { CreateUnitDTO, UpdateUnitDTO } from './units.dto';
-import { Unit } from './units.model';
+import { CreateUnitDTO, UpdateUnitDTO } from './unit.dto';
+import { Unit } from './unit.model';
 import { UnitsService } from './units.service';
 
 @Controller('/units')

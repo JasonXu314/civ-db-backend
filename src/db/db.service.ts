@@ -2,8 +2,8 @@ import { ConsoleLogger, Injectable, InternalServerErrorException } from '@nestjs
 import { Collection, MongoClient } from 'mongodb';
 import { Civic } from 'src/civics/civic.model';
 import { Civilization } from 'src/civilizations/civilization.model';
-import { Technology } from 'src/technologies/technologies.model';
-import { Unit } from 'src/units/units.model';
+import { Technology } from 'src/technologies/technology.model';
+import { Unit } from 'src/units/unit.model';
 
 @Injectable()
 export class DBService {

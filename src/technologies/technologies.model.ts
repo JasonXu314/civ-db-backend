@@ -1,6 +1,6 @@
-import { IsIn, IsMongoId, IsNotEmpty, IsString, IsUrl } from 'class-validator';
-import { ObjectId } from 'mongodb';
-import { ERAS, Era } from 'src/utils/common';
+import { Type } from 'class-transformer';
+import { IsIn, IsNotEmpty, IsString, IsUrl } from 'class-validator';
+import { DLCRecord, DLCString, DLC_STRINGS, DescDLCRecord, ERAS, Era, MultiDescDLCRecord, MultiReferenceDLCRecord, OptDLCRecord } from 'src/utils/common';
 import { forceInit } from 'src/utils/utils';
 
 export class Technology {
@@ -14,19 +14,31 @@ export class Technology {
 	@IsIn(ERAS)
 	era: Era = forceInit();
 
-	@IsMongoId({ each: true })
-	prerequisites: ObjectId[] = forceInit();
-
-	@IsMongoId({ each: true })
-	dependents: ObjectId[] = forceInit();
+	@Type(() => MultiReferenceDLCRecord)
+	dependencies: MultiReferenceDLCRecord = forceInit();
 
 	@IsString()
 	description: string = forceInit();
 
-	@IsString({ each: true })
-	otherEffects: string[] = forceInit();
+	@Type(() => MultiDescDLCRecord)
+	otherEffects: MultiDescDLCRecord = forceInit();
 
-	@IsString()
-	eureka: string = forceInit();
+	@Type(() => DescDLCRecord)
+	eureka: DescDLCRecord = forceInit();
+
+	@IsIn(DLC_STRINGS)
+	addedBy: DLCString = forceInit();
 }
+
+export type MarshalledTechnology = {
+	name: string;
+	icon: string;
+	era: Era;
+	prerequisites: DLCRecord<Technology[]>;
+	description: string;
+	otherEffects: DLCRecord<string[]>;
+	eureka: OptDLCRecord<string>;
+	addedBy: DLCString;
+	// TODO: add buildings/districts/improvements/units unlocked when added
+};
 

@@ -1,7 +1,7 @@
 import { Type } from 'class-transformer';
 import { IsBoolean, IsIn, IsInt, IsNotEmpty, IsOptional, IsString } from 'class-validator';
-import { DLCString, DLC_STRINGS, ERAS, Era } from 'src/utils/common';
-import { MultiReferenceExpansionRecord, Nullable, ReferenceExpansionRecord, ResourceExpansionRecord, StatExpansionRecord, forceInit } from 'src/utils/utils';
+import { DLCString, DLC_STRINGS, ERAS, Era, MultiReferenceDLCRecord, ReferenceDLCRecord, ResourceDLCRecord, StatDLCRecord } from 'src/utils/common';
+import { Nullable, forceInit } from 'src/utils/utils';
 import { PROMOTION_CLASSES, PromotionClass } from './units.model';
 
 export class CreateUnitDTO {
@@ -15,20 +15,20 @@ export class CreateUnitDTO {
 	@IsIn(ERAS)
 	era: Era = forceInit();
 
-	@Type(() => StatExpansionRecord)
-	production: StatExpansionRecord = forceInit();
+	@Type(() => StatDLCRecord)
+	production: StatDLCRecord = forceInit();
 
-	@Type(() => StatExpansionRecord)
-	gold: StatExpansionRecord = forceInit();
+	@Type(() => StatDLCRecord)
+	gold: StatDLCRecord = forceInit();
 
-	@Type(() => StatExpansionRecord)
-	maintenance: StatExpansionRecord = forceInit();
+	@Type(() => StatDLCRecord)
+	maintenance: StatDLCRecord = forceInit();
 
-	@Type(() => ResourceExpansionRecord)
-	resource: ResourceExpansionRecord = forceInit();
+	@Type(() => ResourceDLCRecord)
+	resource: ResourceDLCRecord = forceInit();
 
-	@Type(() => ResourceExpansionRecord)
-	maintenanceResource: ResourceExpansionRecord = forceInit();
+	@Type(() => ResourceDLCRecord)
+	maintenanceResource: ResourceDLCRecord = forceInit();
 
 	@IsBoolean()
 	unique: boolean = forceInit();
@@ -57,23 +57,23 @@ export class CreateUnitDTO {
 	@Nullable()
 	aaStrength: number | null = forceInit();
 
-	@Type(() => ReferenceExpansionRecord)
-	replaces: ReferenceExpansionRecord = forceInit();
+	@Type(() => ReferenceDLCRecord)
+	replaces: ReferenceDLCRecord = forceInit();
 
 	@IsString()
 	description: string = forceInit();
 
-	@Type(() => ReferenceExpansionRecord)
-	unlockedBy: ReferenceExpansionRecord = forceInit();
+	@Type(() => ReferenceDLCRecord)
+	unlockedBy: ReferenceDLCRecord = forceInit();
 
-	@Type(() => ReferenceExpansionRecord)
-	obsoletedBy: ReferenceExpansionRecord = forceInit();
+	@Type(() => ReferenceDLCRecord)
+	obsoletedBy: ReferenceDLCRecord = forceInit();
 
-	@Type(() => MultiReferenceExpansionRecord)
-	upgradesFrom: MultiReferenceExpansionRecord = forceInit();
+	@Type(() => MultiReferenceDLCRecord)
+	upgradesFrom: MultiReferenceDLCRecord = forceInit();
 
-	@Type(() => MultiReferenceExpansionRecord)
-	upgradesTo: MultiReferenceExpansionRecord = forceInit();
+	@Type(() => MultiReferenceDLCRecord)
+	upgradesTo: MultiReferenceDLCRecord = forceInit();
 
 	@IsIn(DLC_STRINGS)
 	addedBy: DLCString = forceInit();
@@ -93,25 +93,25 @@ export class UpdateUnitDTO {
 	@IsOptional()
 	era?: Era;
 
-	@Type(() => StatExpansionRecord)
+	@Type(() => StatDLCRecord)
 	@IsOptional()
-	production?: StatExpansionRecord;
+	production?: StatDLCRecord;
 
-	@Type(() => StatExpansionRecord)
+	@Type(() => StatDLCRecord)
 	@IsOptional()
-	gold?: StatExpansionRecord;
+	gold?: StatDLCRecord;
 
-	@Type(() => StatExpansionRecord)
+	@Type(() => StatDLCRecord)
 	@IsOptional()
-	maintenance?: StatExpansionRecord;
+	maintenance?: StatDLCRecord;
 
-	@Type(() => ResourceExpansionRecord)
+	@Type(() => ResourceDLCRecord)
 	@IsOptional()
-	resource?: ResourceExpansionRecord = forceInit();
+	resource?: ResourceDLCRecord = forceInit();
 
-	@Type(() => ResourceExpansionRecord)
+	@Type(() => ResourceDLCRecord)
 	@IsOptional()
-	maintenanceResource?: ResourceExpansionRecord = forceInit();
+	maintenanceResource?: ResourceDLCRecord = forceInit();
 
 	@IsBoolean()
 	@IsOptional()
@@ -148,29 +148,29 @@ export class UpdateUnitDTO {
 	@IsOptional()
 	aaStrength?: number | null;
 
-	@Type(() => ReferenceExpansionRecord)
+	@Type(() => ReferenceDLCRecord)
 	@IsOptional()
-	replaces?: ReferenceExpansionRecord;
+	replaces?: ReferenceDLCRecord;
 
 	@IsString()
 	@IsOptional()
 	description?: string;
 
-	@Type(() => ReferenceExpansionRecord)
+	@Type(() => ReferenceDLCRecord)
 	@IsOptional()
-	unlockedBy?: ReferenceExpansionRecord;
+	unlockedBy?: ReferenceDLCRecord;
 
-	@Type(() => ReferenceExpansionRecord)
+	@Type(() => ReferenceDLCRecord)
 	@IsOptional()
-	obsoletedBy?: ReferenceExpansionRecord;
+	obsoletedBy?: ReferenceDLCRecord;
 
-	@Type(() => MultiReferenceExpansionRecord)
+	@Type(() => MultiReferenceDLCRecord)
 	@IsOptional()
-	upgradesFrom?: MultiReferenceExpansionRecord;
+	upgradesFrom?: MultiReferenceDLCRecord;
 
-	@Type(() => MultiReferenceExpansionRecord)
+	@Type(() => MultiReferenceDLCRecord)
 	@IsOptional()
-	upgradesTo?: MultiReferenceExpansionRecord;
+	upgradesTo?: MultiReferenceDLCRecord;
 
 	@IsIn(DLC_STRINGS)
 	@IsOptional()

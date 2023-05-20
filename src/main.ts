@@ -9,7 +9,7 @@ async function bootstrap() {
 	const app = await NestFactory.create(AppModule);
 
 	app.useGlobalPipes(new ValidationPipe());
-	app.enableCors({ origin: true, credentials: true });
+	app.enableCors({ origin: true });
 
 	await app.listen(process.env.PORT || 8000);
 }

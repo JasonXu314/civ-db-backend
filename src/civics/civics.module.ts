@@ -9,5 +9,5 @@ import { CivicsService } from './civics.service';
 	providers: [CivicsService],
 	exports: [CivicsService]
 })
-export class TechnologiesModule {}
+export class CivicsModule {}
 

@@ -1,6 +1,6 @@
 import { Type } from 'class-transformer';
 import { IsIn, IsNotEmpty, IsOptional, IsString } from 'class-validator';
-import { DLCString, DLC_STRINGS, DescDLCRecord, ERAS, Era, MultiDescDLCRecord, MultiReferenceDLCRecord } from 'src/utils/common';
+import { DLCString, DLC_STRINGS, DescDLCRecord, ERAS, Era, MultiDescDLCRecord, MultiReferenceDLCRecord, StatDLCRecord } from 'src/utils/common';
 import { forceInit } from 'src/utils/utils';
 
 export class CreateTechnologyDTO {
@@ -10,6 +10,9 @@ export class CreateTechnologyDTO {
 
 	@IsIn(ERAS)
 	era: Era = forceInit();
+
+	@Type(() => StatDLCRecord)
+	cost: StatDLCRecord = forceInit();
 
 	@Type(() => MultiReferenceDLCRecord)
 	dependencies: MultiReferenceDLCRecord = forceInit();
@@ -36,6 +39,10 @@ export class UpdateTechnologyDTO {
 	@IsIn(ERAS)
 	@IsOptional()
 	era?: Era;
+
+	@Type(() => StatDLCRecord)
+	@IsOptional()
+	cost?: StatDLCRecord;
 
 	@Type(() => MultiReferenceDLCRecord)
 	@IsOptional()

@@ -1,6 +1,18 @@
 import { Type } from 'class-transformer';
 import { IsIn, IsNotEmpty, IsString, IsUrl } from 'class-validator';
-import { DLCRecord, DLCString, DLC_STRINGS, DescDLCRecord, ERAS, Era, MultiDescDLCRecord, MultiReferenceDLCRecord, OptDLCRecord } from 'src/utils/common';
+import {
+	DLCRecord,
+	DLCString,
+	DLC_STRINGS,
+	DescDLCRecord,
+	ERAS,
+	Era,
+	MultiDescDLCRecord,
+	MultiReferenceDLCRecord,
+	OptDLCRecord,
+	PartialOptDLCRecord,
+	StatDLCRecord
+} from 'src/utils/common';
 import { forceInit } from 'src/utils/utils';
 
 export class Technology {
@@ -13,6 +25,9 @@ export class Technology {
 
 	@IsIn(ERAS)
 	era: Era = forceInit();
+
+	@Type(() => StatDLCRecord)
+	cost: StatDLCRecord = forceInit();
 
 	@Type(() => MultiReferenceDLCRecord)
 	dependencies: MultiReferenceDLCRecord = forceInit();
@@ -34,6 +49,7 @@ export type MarshalledTechnology = {
 	name: string;
 	icon: string;
 	era: Era;
+	cost: PartialOptDLCRecord<number>;
 	prerequisites: DLCRecord<Technology[]>;
 	description: string;
 	otherEffects: DLCRecord<string[]>;

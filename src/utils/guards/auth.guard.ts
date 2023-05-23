@@ -9,7 +9,7 @@ export class AuthGuard implements CanActivate {
 	public canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean> {
 		const req = context.switchToHttp().getRequest<Request>();
 
-		this._logger.log(`Received auth attempt with secret ${req.query.secret}`);
+		this._logger.log(`Received auth attempt to path ${req.path} with secret ${req.query.secret}`);
 
 		return req.query.secret === process.env.SECRET;
 	}

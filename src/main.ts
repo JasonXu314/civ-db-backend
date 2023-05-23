@@ -15,7 +15,7 @@ async function bootstrap() {
 	await app.listen(process.env.PORT || 8000);
 
 	setInterval(() => {
-		axios.post('/wakeup');
+		axios.post(`http://localhost:${process.env.PORT || 8000}/wakeup`);
 	}, 25_000);
 }
 bootstrap();

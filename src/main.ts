@@ -16,7 +16,7 @@ async function bootstrap() {
 
 	setInterval(() => {
 		axios.post(`http://localhost:${process.env.PORT || 8000}/wakeup`);
-	}, 25_000);
+	}, 10_000);
 }
 bootstrap();
 

@@ -33,6 +33,11 @@ export class IDWithSearchDTO extends IDDTO {
 	query?: string;
 }
 
+export class NameSearchDTO {
+	@IsString()
+	name: string = forceInit();
+}
+
 export function forceInit<T>(): T {
 	return undefined as T;
 }
@@ -62,5 +67,39 @@ export function deepMerge<T>(obj: T, updates: DeepPartial<T>): T {
 	}
 
 	return copy;
+}
+
+export function isUncapitalizedWord(word: string): boolean {
+	return ['of', 'the', 'a'].includes(word);
+}
+
+export function reformatName(normalizedName: string): string {
+	return normalizedName.replace(/_/g, ' ');
+}
+
+export function normalizeName(name: string): string {
+	return name
+		.split(/[\s_]/)
+		.map((word, i) => (i === 0 || !isUncapitalizedWord(word) ? word.slice(0, 1).toUpperCase() + word.slice(1).toLowerCase() : word))
+		.join('_');
+}
+
+export function matchQuery<K extends string>(obj: { [key in K]: string }, query: string, ...fields: K[]): boolean {
+	return fields.some((field) => {
+		const value = obj[field].toLowerCase();
+		const q = query.toLowerCase();
+		const vws = value.replace(/\s/g, '');
+		const qws = q.replace(/\s/g, '');
+		const vFrags = value.split(/s/);
+		const qFrags = q.split(/s/);
+
+		return (
+			value.includes(q) ||
+			q.includes(value) ||
+			vws.includes(qws) ||
+			qws.includes(vws) ||
+			qFrags.every((f) => vFrags.some((fragment) => fragment.includes(f) || f.includes(fragment)))
+		);
+	});
 }
 

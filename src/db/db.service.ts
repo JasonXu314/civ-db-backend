@@ -56,8 +56,8 @@ export class DBService {
 	private _getDB(): string {
 		switch (process.env.STAGE) {
 			case 'test':
-				return 'staging';
 			case 'local':
+				return 'staging';
 			case 'live':
 				return 'main';
 			default:

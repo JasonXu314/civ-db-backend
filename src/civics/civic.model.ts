@@ -56,7 +56,8 @@ export type MarshalledCivic = {
 	icon: string;
 	era: Era;
 	cost: PartialOptDLCRecord<number>;
-	prerequisites: DLCRecord<Civic[]>;
+	dependencies: DLCRecord<Civic[]>;
+	dependents: DLCRecord<Civic[]>;
 	description: string;
 	envoys: PartialOptDLCRecord<number>;
 	governorTitles: PartialOptDLCRecord<number>;

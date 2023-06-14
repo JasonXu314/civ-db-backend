@@ -21,7 +21,7 @@ import { MarshallingError } from 'src/utils/common';
 import { AuthGuard } from 'src/utils/guards/auth.guard';
 import { FormDataInterceptor } from 'src/utils/interceptors/FormData.interceptor';
 import { IDPipe } from 'src/utils/pipes/id.pipe';
-import { DeepPartial, IDDTO, IDRequiredDTO, IDWithSearchDTO } from 'src/utils/utils';
+import { DeepPartial, IDDTO, IDRequiredDTO, IDWithSearchDTO, NameSearchDTO } from 'src/utils/utils';
 import { CreateCivicDTO, UpdateCivicDTO } from './civic.dto';
 import { Civic, MarshalledCivic } from './civic.model';
 import { CivicsService } from './civics.service';
@@ -54,20 +54,16 @@ export class CivicsController {
 				}
 			}
 		} else if (query) {
-			const civic = await this.civics.search(query);
+			const civics = await this.civics.search(query);
 
-			if (!civic) {
-				throw new NotFoundException(`Technology with id ${id} does not exist`);
-			} else {
-				try {
-					return await this.civics.marshal(civic);
-				} catch (err: unknown) {
-					if (err instanceof MarshallingError) {
-						throw new InternalServerErrorException(typeof err.cause === 'string' ? err.cause : err.cause.message);
-					} else {
-						this._logger.log(`Unknown error when marshalling technologies filtered by search term ${query}`, err);
-						throw new InternalServerErrorException('Unknown Error');
-					}
+			try {
+				return await this.civics.marshal(civics);
+			} catch (err: unknown) {
+				if (err instanceof MarshallingError) {
+					throw new InternalServerErrorException(typeof err.cause === 'string' ? err.cause : err.cause.message);
+				} else {
+					this._logger.log(`Unknown error when marshalling technologies filtered by search term ${query}`, err);
+					throw new InternalServerErrorException('Unknown Error');
 				}
 			}
 		}
@@ -156,6 +152,26 @@ export class CivicsController {
 			throw new NotFoundException('Failed to insert new technology');
 		} else {
 			return updatedTech;
+		}
+	}
+
+	@Get('/:name')
+	public async getMarshalledCivicByName(@Param() { name }: NameSearchDTO): Promise<WithId<MarshalledCivic>> {
+		const civic = await this.civics.getByName(name);
+
+		if (!civic) {
+			throw new NotFoundException(`Technology with name ${name} does not exist`);
+		} else {
+			try {
+				return await this.civics.marshal(civic);
+			} catch (err: unknown) {
+				if (err instanceof MarshallingError) {
+					throw new InternalServerErrorException(typeof err.cause === 'string' ? err.cause : err.cause.message);
+				} else {
+					this._logger.log(`Unknown error when marshalling technology ${civic._id}`, err);
+					throw new InternalServerErrorException('Unknown Error');
+				}
+			}
 		}
 	}
 }

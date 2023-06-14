@@ -65,9 +65,9 @@ export class TechnologiesService {
 
 	public async getPrerequisites(tech: WithId<Technology>): Promise<DLCRecord<WithId<Technology>[]>> {
 		const prerequisites = {
-			base: await Promise.all(tech.dependencies.base.map((id) => this.getById(id))),
-			rf: await Promise.all(tech.dependencies.rf.map((id) => this.getById(id))),
-			gs: await Promise.all(tech.dependencies.gs.map((id) => this.getById(id)))
+			base: await Promise.all(tech.dependencies.base.map((id) => this.getById(ObjectId.createFromHexString(id)))),
+			rf: await Promise.all(tech.dependencies.rf.map((id) => this.getById(ObjectId.createFromHexString(id)))),
+			gs: await Promise.all(tech.dependencies.gs.map((id) => this.getById(ObjectId.createFromHexString(id))))
 		};
 
 		for (const dlc of DLC_STRINGS) {

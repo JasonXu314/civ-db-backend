@@ -98,26 +98,26 @@ export class ResourceDLCRecord {
 export class ReferenceDLCRecord {
 	@IsMongoId()
 	@Nullable()
-	base: ObjectId | null = forceInit();
+	base: string | null = forceInit();
 
 	@IsMongoId()
 	@Nullable()
-	rf: ObjectId | null = forceInit();
+	rf: string | null = forceInit();
 
 	@IsMongoId()
 	@Nullable()
-	gs: ObjectId | null = forceInit();
+	gs: string | null = forceInit();
 }
 
 export class MultiReferenceDLCRecord {
 	@IsMongoId({ each: true })
-	base: ObjectId[] = forceInit();
+	base: string[] = forceInit();
 
 	@IsMongoId({ each: true })
-	rf: ObjectId[] = forceInit();
+	rf: string[] = forceInit();
 
 	@IsMongoId({ each: true })
-	gs: ObjectId[] = forceInit();
+	gs: string[] = forceInit();
 }
 
 export class MarshallingError extends Error {

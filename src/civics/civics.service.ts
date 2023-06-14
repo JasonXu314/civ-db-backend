@@ -2,7 +2,7 @@ import { ConsoleLogger, Injectable } from '@nestjs/common';
 import { ObjectId, WithId } from 'mongodb';
 import { DBService } from 'src/db/db.service';
 import { DLCRecord, DLC_STRINGS, MarshallingError, PrerequisiteError } from 'src/utils/common';
-import { DeepPartial, deepMerge } from 'src/utils/utils';
+import { DeepPartial, deepMerge, matchQuery, normalizeName, reformatName } from 'src/utils/utils';
 import { Civic, MarshalledCivic } from './civic.model';
 
 @Injectable()
@@ -19,8 +19,15 @@ export class CivicsService {
 		return this._db.civics.findOne({ _id });
 	}
 
+	public async getByName(name: string): Promise<WithId<Civic> | null> {
+		this._logger.log(`Finding civic with name "${reformatName(normalizeName(name))}"`);
+		return this._db.civics.findOne({ name: reformatName(normalizeName(name)) });
+	}
+
 	public async search(query: string): Promise<WithId<Civic>[]> {
-		return this._db.civics.find({ $text: { $search: query } }, { sort: { score: { $meta: 'textScore' } } }).toArray();
+		const civics = await this._db.civics.find().toArray();
+
+		return civics.filter((civic) => matchQuery(civic, query, 'name', 'description'));
 	}
 
 	public async create(tech: Civic): Promise<ObjectId> {
@@ -48,10 +55,11 @@ export class CivicsService {
 			const civic = civicOrCivics;
 
 			try {
-				const prerequisites = await this.getPrerequisites(civic);
+				const dependencies = await this.getDependencies(civic);
+				const dependents = await this.getDependents(civic);
 				// TODO: add buildings/districts/improvements/units/wonders unlocked when added
 
-				return { ...civic, prerequisites };
+				return { ...civic, dependencies, dependents };
 			} catch (err: unknown) {
 				if (err instanceof PrerequisiteError || err instanceof Error) {
 					throw new MarshallingError(err);
@@ -63,23 +71,35 @@ export class CivicsService {
 		}
 	}
 
-	public async getPrerequisites(civic: WithId<Civic>): Promise<DLCRecord<WithId<Civic>[]>> {
-		const prerequisites = {
-			base: await Promise.all(civic.dependencies.base.map((id) => this.getById(id))),
-			rf: await Promise.all(civic.dependencies.rf.map((id) => this.getById(id))),
-			gs: await Promise.all(civic.dependencies.gs.map((id) => this.getById(id)))
+	public async getDependencies(civic: WithId<Civic>): Promise<DLCRecord<WithId<Civic>[]>> {
+		const dependencies = {
+			base: await Promise.all(civic.dependencies.base.map((id) => this.getById(ObjectId.createFromHexString(id)))),
+			rf: await Promise.all(civic.dependencies.rf.map((id) => this.getById(ObjectId.createFromHexString(id)))),
+			gs: await Promise.all(civic.dependencies.gs.map((id) => this.getById(ObjectId.createFromHexString(id))))
 		};
 
 		for (const dlc of DLC_STRINGS) {
-			if (prerequisites[dlc].some((tech) => tech === null)) {
+			if (dependencies[dlc].some((tech) => tech === null)) {
 				throw new PrerequisiteError(
 					dlc,
-					prerequisites[dlc].reduce<ObjectId[]>((missing, prereq, i) => (prereq === null ? [...missing, civic.dependencies[i]] : missing), [])
+					dependencies[dlc].reduce<ObjectId[]>((missing, prereq, i) => (prereq === null ? [...missing, civic.dependencies[i]] : missing), [])
 				);
 			}
 		}
 
-		return prerequisites as DLCRecord<WithId<Civic>[]>;
+		return dependencies as DLCRecord<WithId<Civic>[]>;
+	}
+
+	public async getDependents(civic: WithId<Civic>): Promise<DLCRecord<WithId<Civic>[]>> {
+		const base = await this._db.civics.find({ 'dependencies.base': civic._id.toHexString() }).toArray();
+		const rf = await this._db.civics.find({ 'dependencies.rf': civic._id.toHexString() }).toArray();
+		const gs = await this._db.civics.find({ 'dependencies.gs': civic._id.toHexString() }).toArray();
+
+		return {
+			base,
+			rf,
+			gs
+		};
 	}
 }
 

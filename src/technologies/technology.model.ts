@@ -51,6 +51,7 @@ export type MarshalledTechnology = {
 	era: Era;
 	cost: PartialOptDLCRecord<number>;
 	prerequisites: DLCRecord<Technology[]>;
+	dependents: DLCRecord<Technology[]>;
 	description: string;
 	otherEffects: DLCRecord<string[]>;
 	eureka: OptDLCRecord<string>;

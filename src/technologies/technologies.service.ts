@@ -2,7 +2,7 @@ import { ConsoleLogger, Injectable } from '@nestjs/common';
 import { ObjectId, WithId } from 'mongodb';
 import { DBService } from 'src/db/db.service';
 import { DLCRecord, DLC_STRINGS, MarshallingError, PrerequisiteError } from 'src/utils/common';
-import { DeepPartial, deepMerge } from 'src/utils/utils';
+import { DeepPartial, deepMerge, normalizeName, reformatName } from 'src/utils/utils';
 import { MarshalledTechnology, Technology } from './technology.model';
 
 @Injectable()
@@ -17,6 +17,10 @@ export class TechnologiesService {
 
 	public async getById(_id: ObjectId): Promise<WithId<Technology> | null> {
 		return this._db.technologies.findOne({ _id });
+	}
+
+	public async getByName(name: string): Promise<WithId<Technology> | null> {
+		return this._db.technologies.findOne({ name: reformatName(normalizeName(name)) });
 	}
 
 	public async search(query: string): Promise<WithId<Technology>[]> {
@@ -49,9 +53,10 @@ export class TechnologiesService {
 
 			try {
 				const prerequisites = await this.getPrerequisites(tech);
+				const dependents = await this.getDependents(tech);
 				// TODO: add buildings/districts/improvements/units/wonders unlocked when added
 
-				return { ...tech, prerequisites };
+				return { ...tech, prerequisites, dependents };
 			} catch (err: unknown) {
 				if (err instanceof PrerequisiteError || err instanceof Error) {
 					throw new MarshallingError(err);
@@ -80,6 +85,18 @@ export class TechnologiesService {
 		}
 
 		return prerequisites as DLCRecord<WithId<Technology>[]>;
+	}
+
+	public async getDependents(tech: WithId<Technology>): Promise<DLCRecord<WithId<Technology>[]>> {
+		const base = await this._db.technologies.find({ 'dependencies.base': tech._id.toHexString() }).toArray();
+		const rf = await this._db.technologies.find({ 'dependencies.rf': tech._id.toHexString() }).toArray();
+		const gs = await this._db.technologies.find({ 'dependencies.gs': tech._id.toHexString() }).toArray();
+
+		return {
+			base,
+			rf,
+			gs
+		};
 	}
 }
 

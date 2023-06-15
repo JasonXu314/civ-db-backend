@@ -21,7 +21,7 @@ import { MarshallingError } from 'src/utils/common';
 import { AuthGuard } from 'src/utils/guards/auth.guard';
 import { FormDataInterceptor } from 'src/utils/interceptors/FormData.interceptor';
 import { IDPipe } from 'src/utils/pipes/id.pipe';
-import { DeepPartial, IDDTO, IDRequiredDTO, IDWithSearchDTO } from 'src/utils/utils';
+import { DeepPartial, IDDTO, IDRequiredDTO, IDWithSearchDTO, NameSearchDTO } from 'src/utils/utils';
 import { TechnologiesService } from './technologies.service';
 import { CreateTechnologyDTO, UpdateTechnologyDTO } from './technology.dto';
 import { MarshalledTechnology, Technology } from './technology.model';
@@ -158,6 +158,26 @@ export class TechnologiesController {
 			throw new NotFoundException('Failed to insert new technology');
 		} else {
 			return updatedTech;
+		}
+	}
+
+	@Get('/:name')
+	public async getMarshalledCivicByName(@Param() { name }: NameSearchDTO): Promise<WithId<MarshalledTechnology>> {
+		const tech = await this.technologies.getByName(name);
+
+		if (!tech) {
+			throw new NotFoundException(`Technology with name ${name} does not exist`);
+		} else {
+			try {
+				return await this.technologies.marshal(tech);
+			} catch (err: unknown) {
+				if (err instanceof MarshallingError) {
+					throw new InternalServerErrorException(typeof err.cause === 'string' ? err.cause : err.cause.message);
+				} else {
+					this._logger.log(`Unknown error when marshalling technology ${tech._id}`, err);
+					throw new InternalServerErrorException('Unknown Error');
+				}
+			}
 		}
 	}
 }

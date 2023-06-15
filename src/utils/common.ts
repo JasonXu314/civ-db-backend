@@ -23,12 +23,6 @@ export type DLCRecord<T> = {
 	gs: T;
 };
 
-export type PartialOptDLCRecord<T> = {
-	base: T;
-	rf: T | null;
-	gs: T | null;
-};
-
 export type OptDLCRecord<T> = {
 	base: T | null;
 	rf: T | null;
@@ -37,7 +31,7 @@ export type OptDLCRecord<T> = {
 
 export class StatDLCRecord {
 	@IsInt()
-	base: number = forceInit();
+	base: number | null = forceInit();
 
 	@IsInt()
 	@Nullable()

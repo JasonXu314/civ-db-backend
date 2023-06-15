@@ -10,7 +10,6 @@ import {
 	MultiDescDLCRecord,
 	MultiReferenceDLCRecord,
 	OptDLCRecord,
-	PartialOptDLCRecord,
 	StatDLCRecord
 } from 'src/utils/common';
 import { forceInit } from 'src/utils/utils';
@@ -55,12 +54,12 @@ export type MarshalledCivic = {
 	name: string;
 	icon: string;
 	era: Era;
-	cost: PartialOptDLCRecord<number>;
+	cost: OptDLCRecord<number>;
 	dependencies: DLCRecord<Civic[]>;
 	dependents: DLCRecord<Civic[]>;
 	description: string;
-	envoys: PartialOptDLCRecord<number>;
-	governorTitles: PartialOptDLCRecord<number>;
+	envoys: OptDLCRecord<number>;
+	governorTitles: OptDLCRecord<number>;
 	otherEffects: DLCRecord<string[]>;
 	inspiration: OptDLCRecord<string>;
 	addedBy: DLCString;

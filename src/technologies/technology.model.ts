@@ -10,7 +10,6 @@ import {
 	MultiDescDLCRecord,
 	MultiReferenceDLCRecord,
 	OptDLCRecord,
-	PartialOptDLCRecord,
 	StatDLCRecord
 } from 'src/utils/common';
 import { forceInit } from 'src/utils/utils';
@@ -49,7 +48,7 @@ export type MarshalledTechnology = {
 	name: string;
 	icon: string;
 	era: Era;
-	cost: PartialOptDLCRecord<number>;
+	cost: OptDLCRecord<number>;
 	prerequisites: DLCRecord<Technology[]>;
 	dependents: DLCRecord<Technology[]>;
 	description: string;

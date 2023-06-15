@@ -58,6 +58,8 @@ export function deepMerge<T>(obj: T, updates: DeepPartial<T>): T {
 		if (typeof value === 'object') {
 			if (Array.isArray(value)) {
 				copy[prop] = updates[prop];
+			} else if (value === null) {
+				copy[prop] = updates[prop];
 			} else {
 				copy[prop] = deepMerge(copy[prop], updates[prop]);
 			}

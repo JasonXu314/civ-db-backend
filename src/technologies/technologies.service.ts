@@ -52,11 +52,11 @@ export class TechnologiesService {
 			const tech = techOrTechs;
 
 			try {
-				const prerequisites = await this.getPrerequisites(tech);
+				const dependencies = await this.getPrerequisites(tech);
 				const dependents = await this.getDependents(tech);
 				// TODO: add buildings/districts/improvements/units/wonders unlocked when added
 
-				return { ...tech, prerequisites, dependents };
+				return { ...tech, dependencies, dependents };
 			} catch (err: unknown) {
 				if (err instanceof PrerequisiteError || err instanceof Error) {
 					throw new MarshallingError(err);

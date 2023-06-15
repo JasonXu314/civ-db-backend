@@ -49,7 +49,7 @@ export type MarshalledTechnology = {
 	icon: string;
 	era: Era;
 	cost: OptDLCRecord<number>;
-	prerequisites: DLCRecord<Technology[]>;
+	dependencies: DLCRecord<Technology[]>;
 	dependents: DLCRecord<Technology[]>;
 	description: string;
 	otherEffects: DLCRecord<string[]>;

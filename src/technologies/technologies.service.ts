@@ -41,19 +41,22 @@ export class TechnologiesService {
 		return (await this._db.technologies.findOneAndUpdate({ _id }, { $set: deepMerge(existingData, data) })).value;
 	}
 
-	public async marshal(tech: WithId<Technology>): Promise<WithId<MarshalledTechnology>>;
-	public async marshal(techs: WithId<Technology>[]): Promise<WithId<MarshalledTechnology>[]>;
-	public async marshal(techOrTechs: WithId<Technology> | WithId<Technology>[]): Promise<WithId<MarshalledTechnology> | WithId<MarshalledTechnology>[]> {
+	public async marshal(tech: WithId<Technology>, hints?: WithId<Technology>[]): Promise<WithId<MarshalledTechnology>>;
+	public async marshal(techs: WithId<Technology>[], hints?: WithId<Technology>[]): Promise<WithId<MarshalledTechnology>[]>;
+	public async marshal(
+		techOrTechs: WithId<Technology> | WithId<Technology>[],
+		hints?: WithId<Technology>[]
+	): Promise<WithId<MarshalledTechnology> | WithId<MarshalledTechnology>[]> {
 		if (Array.isArray(techOrTechs)) {
 			const techs = techOrTechs;
 
-			return Promise.all(techs.map((tech) => this.marshal(tech)));
+			return Promise.all(techs.map((tech) => this.marshal(tech, hints)));
 		} else {
 			const tech = techOrTechs;
 
 			try {
-				const dependencies = await this.getPrerequisites(tech);
-				const dependents = await this.getDependents(tech);
+				const dependencies = await this.getPrerequisites(tech, hints);
+				const dependents = await this.getDependents(tech, hints);
 				// TODO: add buildings/districts/improvements/units/wonders unlocked when added
 
 				return { ...tech, dependencies, dependents };
@@ -68,11 +71,17 @@ export class TechnologiesService {
 		}
 	}
 
-	public async getPrerequisites(tech: WithId<Technology>): Promise<DLCRecord<WithId<Technology>[]>> {
+	public async getPrerequisites(tech: WithId<Technology>, hints?: WithId<Technology>[]): Promise<DLCRecord<WithId<Technology>[]>> {
 		const prerequisites = {
-			base: await Promise.all(tech.dependencies.base.map((id) => this.getById(ObjectId.createFromHexString(id)))),
-			rf: await Promise.all(tech.dependencies.rf.map((id) => this.getById(ObjectId.createFromHexString(id)))),
-			gs: await Promise.all(tech.dependencies.gs.map((id) => this.getById(ObjectId.createFromHexString(id))))
+			base: await Promise.all(
+				tech.dependencies.base.map((id) => hints?.find((tech) => tech._id.toHexString() === id) || this.getById(ObjectId.createFromHexString(id)))
+			),
+			rf: await Promise.all(
+				tech.dependencies.rf.map((id) => hints?.find((tech) => tech._id.toHexString() === id) || this.getById(ObjectId.createFromHexString(id)))
+			),
+			gs: await Promise.all(
+				tech.dependencies.gs.map((id) => hints?.find((tech) => tech._id.toHexString() === id) || this.getById(ObjectId.createFromHexString(id)))
+			)
 		};
 
 		for (const dlc of DLC_STRINGS) {
@@ -87,10 +96,16 @@ export class TechnologiesService {
 		return prerequisites as DLCRecord<WithId<Technology>[]>;
 	}
 
-	public async getDependents(tech: WithId<Technology>): Promise<DLCRecord<WithId<Technology>[]>> {
-		const base = await this._db.technologies.find({ 'dependencies.base': tech._id.toHexString() }).toArray();
-		const rf = await this._db.technologies.find({ 'dependencies.rf': tech._id.toHexString() }).toArray();
-		const gs = await this._db.technologies.find({ 'dependencies.gs': tech._id.toHexString() }).toArray();
+	public async getDependents(tech: WithId<Technology>, hints?: WithId<Technology>[]): Promise<DLCRecord<WithId<Technology>[]>> {
+		const base =
+			hints?.filter((t) => t.dependencies.base.includes(tech._id.toHexString())) ||
+			(await this._db.technologies.find({ 'dependencies.base': tech._id.toHexString() }).toArray());
+		const rf =
+			hints?.filter((t) => t.dependencies.base.includes(tech._id.toHexString())) ||
+			(await this._db.technologies.find({ 'dependencies.rf': tech._id.toHexString() }).toArray());
+		const gs =
+			hints?.filter((t) => t.dependencies.base.includes(tech._id.toHexString())) ||
+			(await this._db.technologies.find({ 'dependencies.gs': tech._id.toHexString() }).toArray());
 
 		return {
 			base,

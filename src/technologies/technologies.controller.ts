@@ -75,7 +75,8 @@ export class TechnologiesController {
 		}
 
 		try {
-			return await this.technologies.marshal(await this.technologies.get());
+			const techs = await this.technologies.get();
+			return await this.technologies.marshal(techs, techs);
 		} catch (err: unknown) {
 			if (err instanceof MarshallingError) {
 				throw new InternalServerErrorException(typeof err.cause === 'string' ? err.cause : err.cause.message);

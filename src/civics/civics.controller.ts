@@ -147,12 +147,12 @@ export class CivicsController {
 			updates.icon = `${process.env.CDN_URL}/${iconId}`;
 		}
 
-		const updatedTech = await this.civics.update(id, updates);
+		const updatedCivic = await this.civics.update(id, updates);
 
-		if (!updatedTech) {
+		if (!updatedCivic) {
 			throw new NotFoundException('Failed to insert new civic');
 		} else {
-			return updatedTech;
+			return updatedCivic;
 		}
 	}
 

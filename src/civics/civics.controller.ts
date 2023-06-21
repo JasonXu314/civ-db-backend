@@ -69,7 +69,8 @@ export class CivicsController {
 		}
 
 		try {
-			return await this.civics.marshal(await this.civics.get());
+			const civics = await this.civics.get();
+			return await this.civics.marshal(civics, civics);
 		} catch (err: unknown) {
 			if (err instanceof MarshallingError) {
 				throw new InternalServerErrorException(typeof err.cause === 'string' ? err.cause : err.cause.message);

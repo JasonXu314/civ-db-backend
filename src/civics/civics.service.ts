@@ -44,13 +44,16 @@ export class CivicsService {
 		return (await this._db.civics.findOneAndUpdate({ _id }, { $set: deepMerge(existingData, data) })).value;
 	}
 
-	public async marshal(civic: WithId<Civic>): Promise<WithId<MarshalledCivic>>;
-	public async marshal(civics: WithId<Civic>[]): Promise<WithId<MarshalledCivic>[]>;
-	public async marshal(civicOrCivics: WithId<Civic> | WithId<Civic>[]): Promise<WithId<MarshalledCivic> | WithId<MarshalledCivic>[]> {
+	public async marshal(civic: WithId<Civic>, hints?: WithId<Civic>[]): Promise<WithId<MarshalledCivic>>;
+	public async marshal(civics: WithId<Civic>[], hints?: WithId<Civic>[]): Promise<WithId<MarshalledCivic>[]>;
+	public async marshal(
+		civicOrCivics: WithId<Civic> | WithId<Civic>[],
+		hints?: WithId<Civic>[]
+	): Promise<WithId<MarshalledCivic> | WithId<MarshalledCivic>[]> {
 		if (Array.isArray(civicOrCivics)) {
 			const civics = civicOrCivics;
 
-			return Promise.all(civics.map((tech) => this.marshal(tech)));
+			return Promise.all(civics.map((tech) => this.marshal(tech, hints)));
 		} else {
 			const civic = civicOrCivics;
 
@@ -71,11 +74,17 @@ export class CivicsService {
 		}
 	}
 
-	public async getDependencies(civic: WithId<Civic>): Promise<DLCRecord<WithId<Civic>[]>> {
+	public async getDependencies(civic: WithId<Civic>, hints?: WithId<Civic>[]): Promise<DLCRecord<WithId<Civic>[]>> {
 		const dependencies = {
-			base: await Promise.all(civic.dependencies.base.map((id) => this.getById(ObjectId.createFromHexString(id)))),
-			rf: await Promise.all(civic.dependencies.rf.map((id) => this.getById(ObjectId.createFromHexString(id)))),
-			gs: await Promise.all(civic.dependencies.gs.map((id) => this.getById(ObjectId.createFromHexString(id))))
+			base: await Promise.all(
+				civic.dependencies.base.map((id) => hints?.find((civic) => civic._id.toHexString() === id) || this.getById(ObjectId.createFromHexString(id)))
+			),
+			rf: await Promise.all(
+				civic.dependencies.rf.map((id) => hints?.find((civic) => civic._id.toHexString() === id) || this.getById(ObjectId.createFromHexString(id)))
+			),
+			gs: await Promise.all(
+				civic.dependencies.gs.map((id) => hints?.find((civic) => civic._id.toHexString() === id) || this.getById(ObjectId.createFromHexString(id)))
+			)
 		};
 
 		for (const dlc of DLC_STRINGS) {
@@ -90,10 +99,16 @@ export class CivicsService {
 		return dependencies as DLCRecord<WithId<Civic>[]>;
 	}
 
-	public async getDependents(civic: WithId<Civic>): Promise<DLCRecord<WithId<Civic>[]>> {
-		const base = await this._db.civics.find({ 'dependencies.base': civic._id.toHexString() }).toArray();
-		const rf = await this._db.civics.find({ 'dependencies.rf': civic._id.toHexString() }).toArray();
-		const gs = await this._db.civics.find({ 'dependencies.gs': civic._id.toHexString() }).toArray();
+	public async getDependents(civic: WithId<Civic>, hints?: WithId<Civic>[]): Promise<DLCRecord<WithId<Civic>[]>> {
+		const base =
+			hints?.filter((t) => t.dependencies.base.includes(civic._id.toHexString())) ||
+			(await this._db.civics.find({ 'dependencies.base': civic._id.toHexString() }).toArray());
+		const rf =
+			hints?.filter((t) => t.dependencies.base.includes(civic._id.toHexString())) ||
+			(await this._db.civics.find({ 'dependencies.rf': civic._id.toHexString() }).toArray());
+		const gs =
+			hints?.filter((t) => t.dependencies.base.includes(civic._id.toHexString())) ||
+			(await this._db.civics.find({ 'dependencies.gs': civic._id.toHexString() }).toArray());
 
 		return {
 			base,

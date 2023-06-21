@@ -84,12 +84,12 @@ export class CivicsController {
 	@Get('/data')
 	public async getCivics(@Query(IDPipe) { id }: IDDTO): Promise<WithId<Civic>[] | WithId<Civic>> {
 		if (id) {
-			const tech = await this.civics.getById(id);
+			const civic = await this.civics.getById(id);
 
-			if (!tech) {
+			if (!civic) {
 				throw new NotFoundException(`Civic with id ${id} does not exist`);
 			} else {
-				return tech;
+				return civic;
 			}
 		}
 
@@ -98,12 +98,12 @@ export class CivicsController {
 
 	@Get('/data/:id')
 	public async getCivicById(@Param(IDPipe) { id }: IDRequiredDTO): Promise<WithId<Civic>> {
-		const tech = await this.civics.getById(id);
+		const civic = await this.civics.getById(id);
 
-		if (!tech) {
+		if (!civic) {
 			throw new NotFoundException(`Civic with id ${id} does not exist`);
 		} else {
-			return tech;
+			return civic;
 		}
 	}
 

@@ -3,6 +3,7 @@ import { Collection, MongoClient } from 'mongodb';
 import { Civic } from 'src/civics/civic.model';
 import { Civilization } from 'src/civilizations/civilization.model';
 import { Technology } from 'src/technologies/technology.model';
+import { Terrain } from 'src/terrains/terrain.model';
 import { Unit } from 'src/units/unit.model';
 
 @Injectable()
@@ -51,6 +52,10 @@ export class DBService {
 
 	public get civics(): Collection<Civic> {
 		return this.client.db(this._getDB()).collection('civics');
+	}
+
+	public get terrains(): Collection<Terrain> {
+		return this.client.db(this._getDB()).collection('terrains');
 	}
 
 	private _getDB(): string {

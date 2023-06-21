@@ -9,6 +9,9 @@ export const ERAS = ['Ancient', 'Classical', 'Medieval', 'Renaissance', 'Industr
 export type Resource = 'Horses' | 'Iron' | 'Niter' | 'Coal' | 'Oil' | 'Aluminum' | 'Uranium';
 export const RESOURCES = ['Horses', 'Iron', 'Niter', 'Coal', 'Oil', 'Aluminum', 'Uranium'] as const;
 
+export type Yield = 'Food' | 'Production' | 'Gold' | 'Science' | 'Culture' | 'Faith' | 'Power' | 'Diplomatic Favor' | 'Tourism';
+export const YIELDS = ['Food', 'Production', 'Gold', 'Science', 'Culture', 'Faith', 'Power', 'Diplomatic Favor', 'Tourism'] as const;
+
 export enum DLC {
 	BASE,
 	RF,
@@ -67,7 +70,7 @@ export class MultiDescDLCRecord {
 	gs: string[] = forceInit();
 }
 
-export class ResourceRequirement {
+export class ResourceRecord {
 	@IsIn(RESOURCES)
 	resource: Resource = forceInit();
 
@@ -75,18 +78,26 @@ export class ResourceRequirement {
 	quantity: number = forceInit();
 }
 
+export class YieldRecord {
+	@IsIn(YIELDS)
+	yield: Yield = forceInit();
+
+	@IsInt()
+	quantity: number = forceInit();
+}
+
 export class ResourceDLCRecord {
-	@Type(() => ResourceRequirement)
+	@Type(() => ResourceRecord)
 	@Nullable()
-	base: ResourceRequirement | null = forceInit();
+	base: ResourceRecord | null = forceInit();
 
-	@Type(() => ResourceRequirement)
+	@Type(() => ResourceRecord)
 	@Nullable()
-	rf: ResourceRequirement | null = forceInit();
+	rf: ResourceRecord | null = forceInit();
 
-	@Type(() => ResourceRequirement)
+	@Type(() => ResourceRecord)
 	@Nullable()
-	gs: ResourceRequirement | null = forceInit();
+	gs: ResourceRecord | null = forceInit();
 }
 
 export class ReferenceDLCRecord {

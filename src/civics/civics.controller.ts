@@ -40,7 +40,7 @@ export class CivicsController {
 			const civic = await this.civics.getById(id);
 
 			if (!civic) {
-				throw new NotFoundException(`Technology with id ${id} does not exist`);
+				throw new NotFoundException(`Civic with id ${id} does not exist`);
 			} else {
 				try {
 					return await this.civics.marshal(civic);
@@ -48,7 +48,7 @@ export class CivicsController {
 					if (err instanceof MarshallingError) {
 						throw new InternalServerErrorException(typeof err.cause === 'string' ? err.cause : err.cause.message);
 					} else {
-						this._logger.log(`Unknown error when marshalling technology ${id}`, err);
+						this._logger.log(`Unknown error when marshalling civic ${id}`, err);
 						throw new InternalServerErrorException('Unknown Error');
 					}
 				}
@@ -62,7 +62,7 @@ export class CivicsController {
 				if (err instanceof MarshallingError) {
 					throw new InternalServerErrorException(typeof err.cause === 'string' ? err.cause : err.cause.message);
 				} else {
-					this._logger.log(`Unknown error when marshalling technologies filtered by search term ${query}`, err);
+					this._logger.log(`Unknown error when marshalling civics filtered by search term ${query}`, err);
 					throw new InternalServerErrorException('Unknown Error');
 				}
 			}
@@ -75,7 +75,7 @@ export class CivicsController {
 			if (err instanceof MarshallingError) {
 				throw new InternalServerErrorException(typeof err.cause === 'string' ? err.cause : err.cause.message);
 			} else {
-				this._logger.log('Unknown error when marshalling all technologies', err);
+				this._logger.log('Unknown error when marshalling all civics', err);
 				throw new InternalServerErrorException('Unknown Error');
 			}
 		}
@@ -123,7 +123,7 @@ export class CivicsController {
 		const newCivic = await this.civics.getById(newId);
 
 		if (!newCivic) {
-			throw new NotFoundException('Failed to insert new technology');
+			throw new NotFoundException('Failed to insert new civic');
 		} else {
 			return newCivic;
 		}
@@ -150,7 +150,7 @@ export class CivicsController {
 		const updatedTech = await this.civics.update(id, updates);
 
 		if (!updatedTech) {
-			throw new NotFoundException('Failed to insert new technology');
+			throw new NotFoundException('Failed to insert new civic');
 		} else {
 			return updatedTech;
 		}
@@ -161,7 +161,7 @@ export class CivicsController {
 		const civic = await this.civics.getByName(name);
 
 		if (!civic) {
-			throw new NotFoundException(`Technology with name ${name} does not exist`);
+			throw new NotFoundException(`Civic with name ${name} does not exist`);
 		} else {
 			try {
 				return await this.civics.marshal(civic);
@@ -169,7 +169,7 @@ export class CivicsController {
 				if (err instanceof MarshallingError) {
 					throw new InternalServerErrorException(typeof err.cause === 'string' ? err.cause : err.cause.message);
 				} else {
-					this._logger.log(`Unknown error when marshalling technology ${civic._id}`, err);
+					this._logger.log(`Unknown error when marshalling civic ${civic._id}`, err);
 					throw new InternalServerErrorException('Unknown Error');
 				}
 			}

@@ -7,7 +7,7 @@ import { Civic, MarshalledCivic } from './civic.model';
 
 @Injectable()
 export class CivicsService {
-	private _logger: ConsoleLogger = new ConsoleLogger('Technologies Service');
+	private _logger: ConsoleLogger = new ConsoleLogger('Civics Service');
 
 	constructor(private _db: DBService) {}
 
@@ -30,8 +30,8 @@ export class CivicsService {
 		return civics.filter((civic) => matchQuery(civic, query, 'name', 'description'));
 	}
 
-	public async create(tech: Civic): Promise<ObjectId> {
-		return (await this._db.civics.insertOne(tech)).insertedId;
+	public async create(terrain: Civic): Promise<ObjectId> {
+		return (await this._db.civics.insertOne(terrain)).insertedId;
 	}
 
 	public async update(_id: ObjectId, data: DeepPartial<Civic>): Promise<WithId<Civic> | null> {

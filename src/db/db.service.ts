@@ -2,6 +2,7 @@ import { ConsoleLogger, Injectable, InternalServerErrorException } from '@nestjs
 import { Collection, MongoClient } from 'mongodb';
 import { Civic } from 'src/civics/civic.model';
 import { Civilization } from 'src/civilizations/civilization.model';
+import { Feature } from 'src/features/feature.model';
 import { Technology } from 'src/technologies/technology.model';
 import { Terrain } from 'src/terrains/terrain.model';
 import { Unit } from 'src/units/unit.model';
@@ -56,6 +57,10 @@ export class DBService {
 
 	public get terrains(): Collection<Terrain> {
 		return this.client.db(this._getDB()).collection('terrains');
+	}
+
+	public get features(): Collection<Feature> {
+		return this.client.db(this._getDB()).collection('features');
 	}
 
 	private _getDB(): string {

@@ -53,7 +53,7 @@ export class CivicsService {
 		if (Array.isArray(civicOrCivics)) {
 			const civics = civicOrCivics;
 
-			return Promise.all(civics.map((tech) => this.marshal(tech, hints)));
+			return Promise.all(civics.map((civic) => this.marshal(civic, hints)));
 		} else {
 			const civic = civicOrCivics;
 

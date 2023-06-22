@@ -7,7 +7,7 @@ import { MarshalledTerrain, Terrain } from './terrain.model';
 
 @Injectable()
 export class TerrainsService {
-	private _logger: ConsoleLogger = new ConsoleLogger('Technologies Service');
+	private _logger: ConsoleLogger = new ConsoleLogger('Terrains Service');
 
 	constructor(private _db: DBService) {}
 
@@ -44,30 +44,30 @@ export class TerrainsService {
 		return (await this._db.terrains.findOneAndUpdate({ _id }, { $set: deepMerge(existingData, data) })).value;
 	}
 
-	public async marshal(civic: WithId<Terrain>, hints?: WithId<Terrain>[]): Promise<WithId<MarshalledTerrain>>;
-	public async marshal(civics: WithId<Terrain>[], hints?: WithId<Terrain>[]): Promise<WithId<MarshalledTerrain>[]>;
+	public async marshal(terrain: WithId<Terrain>, hints?: WithId<Terrain>[]): Promise<WithId<MarshalledTerrain>>;
+	public async marshal(terrain: WithId<Terrain>[], hints?: WithId<Terrain>[]): Promise<WithId<MarshalledTerrain>[]>;
 	public async marshal(
-		civicOrCivics: WithId<Terrain> | WithId<Terrain>[],
+		terrainOrTerrains: WithId<Terrain> | WithId<Terrain>[],
 		hints?: WithId<Terrain>[]
 	): Promise<WithId<MarshalledTerrain> | WithId<MarshalledTerrain>[]> {
-		if (Array.isArray(civicOrCivics)) {
-			const civics = civicOrCivics;
+		if (Array.isArray(terrainOrTerrains)) {
+			const terrains = terrainOrTerrains;
 
-			return Promise.all(civics.map((tech) => this.marshal(tech, hints)));
+			return Promise.all(terrains.map((terrain) => this.marshal(terrain, hints)));
 		} else {
-			const civic = civicOrCivics;
+			const terrain = terrainOrTerrains;
 
 			try {
 				// const dependencies = await this.getDependencies(civic);
 				// const dependents = await this.getDependents(civic);
 				// TODO: add buildings/districts/improvements/units/wonders unlocked when added
 
-				return { ...civic };
+				return { ...terrain };
 			} catch (err: unknown) {
 				if (err instanceof PrerequisiteError || err instanceof Error) {
 					throw new MarshallingError(err);
 				} else {
-					this._logger.log(`Encountered error when marshalling civic ${civic._id}`, err);
+					this._logger.log(`Encountered error when marshalling terrain ${terrain._id}`, err);
 					throw new MarshallingError('Unknown Error');
 				}
 			}

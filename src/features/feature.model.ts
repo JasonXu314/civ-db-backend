@@ -12,6 +12,9 @@ export class Feature {
 	@IsNotEmpty()
 	icon: string = forceInit();
 
+	@IsString()
+	description: string = forceInit();
+
 	@IsIn(DLC_STRINGS)
 	addedBy: DLCString = forceInit();
 
@@ -35,6 +38,7 @@ export class Feature {
 export type MarshalledFeature = {
 	name: string;
 	icon: string;
+	description: string;
 	addedBy: DLCString;
 	validTerrain: string[];
 	yieldModifier: YieldRecord[];

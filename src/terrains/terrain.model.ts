@@ -12,6 +12,9 @@ export class Terrain {
 	@IsNotEmpty()
 	icon: string = forceInit();
 
+	@IsString()
+	description: string = forceInit();
+
 	@Type(() => YieldRecord)
 	@ValidateNested({ each: true })
 	yields: YieldRecord[] = forceInit();
@@ -26,7 +29,9 @@ export class Terrain {
 export type MarshalledTerrain = {
 	name: string;
 	icon: string;
+	description: string;
 	yields: YieldRecord[];
 	movementCost: number;
 	weatherEffects: string[];
 };
+

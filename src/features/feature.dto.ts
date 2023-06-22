@@ -8,6 +8,9 @@ export class CreateFeatureDTO {
 	@IsNotEmpty()
 	name: string = forceInit();
 
+	@IsString()
+	description: string = forceInit();
+
 	@IsIn(DLC_STRINGS)
 	addedBy: DLCString = forceInit();
 
@@ -33,6 +36,10 @@ export class UpdateFeatureDTO {
 	@IsNotEmpty()
 	@IsOptional()
 	name?: string;
+
+	@IsString()
+	@IsOptional()
+	description?: string;
 
 	@IsIn(DLC_STRINGS)
 	@IsOptional()

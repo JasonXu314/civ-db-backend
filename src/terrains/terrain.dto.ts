@@ -8,6 +8,9 @@ export class CreateTerrainDTO {
 	@IsNotEmpty()
 	name: string = forceInit();
 
+	@IsString()
+	description: string = forceInit();
+
 	@Type(() => YieldRecord)
 	@ValidateNested({ each: true })
 	yields: YieldRecord[] = forceInit();
@@ -29,6 +32,10 @@ export class UpdateTerrainDTO {
 	@ValidateNested({ each: true })
 	@IsOptional()
 	yields?: YieldRecord[];
+
+	@IsString()
+	@IsOptional()
+	description?: string;
 
 	@IsInt()
 	@IsOptional()

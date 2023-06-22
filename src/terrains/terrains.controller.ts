@@ -98,12 +98,12 @@ export class TerrainsController {
 
 	@Get('/data/:id')
 	public async getTerrainById(@Param(IDPipe) { id }: IDRequiredDTO): Promise<WithId<Terrain>> {
-		const tech = await this.terrains.getById(id);
+		const terrain = await this.terrains.getById(id);
 
-		if (!tech) {
+		if (!terrain) {
 			throw new NotFoundException(`Terrain with id ${id} does not exist`);
 		} else {
-			return tech;
+			return terrain;
 		}
 	}
 

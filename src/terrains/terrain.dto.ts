@@ -18,6 +18,9 @@ export class CreateTerrainDTO {
 	@IsInt()
 	movementCost: number = forceInit();
 
+	@IsInt()
+	defenseModifier: number = forceInit();
+
 	@IsString({ each: true })
 	weatherEffects: string[] = forceInit();
 }
@@ -40,6 +43,10 @@ export class UpdateTerrainDTO {
 	@IsInt()
 	@IsOptional()
 	movementCost?: number;
+
+	@IsInt()
+	@IsOptional()
+	defenseModifier?: number;
 
 	@IsString({ each: true })
 	@IsOptional()

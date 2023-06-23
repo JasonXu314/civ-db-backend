@@ -1,5 +1,5 @@
 import { Type } from 'class-transformer';
-import { IsInt, IsNotEmpty, IsString, ValidateNested } from 'class-validator';
+import { IsBoolean, IsInt, IsNotEmpty, IsString, ValidateNested } from 'class-validator';
 import { YieldRecord } from 'src/utils/common';
 import { forceInit } from 'src/utils/utils';
 
@@ -22,6 +22,12 @@ export class Terrain {
 	@IsInt()
 	movementCost: number = forceInit();
 
+	@IsInt()
+	defenseModifier: number = forceInit();
+
+	@IsBoolean()
+	impassable: boolean = forceInit();
+
 	@IsString({ each: true })
 	weatherEffects: string[] = forceInit();
 }
@@ -32,6 +38,8 @@ export type MarshalledTerrain = {
 	description: string;
 	yields: YieldRecord[];
 	movementCost: number;
+	defenseModifier: number;
+	impassable: boolean;
 	weatherEffects: string[];
 };
 

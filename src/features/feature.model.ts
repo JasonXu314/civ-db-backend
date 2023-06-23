@@ -29,7 +29,7 @@ export class Feature {
 	movementCostModifier: number = forceInit();
 
 	@IsInt()
-	defenceModifier: number = forceInit();
+	defenseModifier: number = forceInit();
 
 	@IsBoolean()
 	removable: number = forceInit();
@@ -43,7 +43,7 @@ export type MarshalledFeature = {
 	validTerrain: string[];
 	yieldModifier: YieldRecord[];
 	movementCostModifier: number;
-	defenceModifier: number;
+	defenseModifier: number;
 	removable: number;
 };
 

@@ -25,7 +25,7 @@ export class CreateFeatureDTO {
 	movementCostModifier: number = forceInit();
 
 	@IsInt()
-	defenceModifier: number = forceInit();
+	defenseModifier: number = forceInit();
 
 	@IsBoolean()
 	removable: number = forceInit();
@@ -60,7 +60,7 @@ export class UpdateFeatureDTO {
 
 	@IsInt()
 	@IsOptional()
-	defenceModifier?: number;
+	defenseModifier?: number;
 
 	@IsBoolean()
 	@IsOptional()

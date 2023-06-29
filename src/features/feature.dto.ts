@@ -28,7 +28,10 @@ export class CreateFeatureDTO {
 	defenseModifier: number = forceInit();
 
 	@IsBoolean()
-	removable: number = forceInit();
+	removable: boolean = forceInit();
+
+	@IsBoolean()
+	impassable: boolean = forceInit();
 }
 
 export class UpdateFeatureDTO {
@@ -64,6 +67,10 @@ export class UpdateFeatureDTO {
 
 	@IsBoolean()
 	@IsOptional()
-	removable?: number;
+	removable?: boolean;
+
+	@IsBoolean()
+	@IsOptional()
+	impassable?: boolean;
 }
 

@@ -32,7 +32,10 @@ export class Feature {
 	defenseModifier: number = forceInit();
 
 	@IsBoolean()
-	removable: number = forceInit();
+	removable: boolean = forceInit();
+
+	@IsBoolean()
+	impassable: boolean = forceInit();
 }
 
 export type MarshalledFeature = {
@@ -44,6 +47,7 @@ export type MarshalledFeature = {
 	yieldModifier: YieldRecord[];
 	movementCostModifier: number;
 	defenseModifier: number;
-	removable: number;
+	removable: boolean;
+	impassable: boolean;
 };
 

@@ -1,9 +1,12 @@
 import { Type } from 'class-transformer';
-import { IsBoolean, IsIn, IsInt, IsMongoId, IsNotEmpty, IsString, ValidateNested } from 'class-validator';
+import { IsIn, IsMongoId, IsNotEmpty, IsString, ValidateNested } from 'class-validator';
+import { Feature } from 'src/features/feature.model';
+import { Technology } from 'src/technologies/technology.model';
+import { Terrain } from 'src/terrains/terrain.model';
 import { DLCString, DLC_STRINGS, YieldRecord } from 'src/utils/common';
-import { Nullable, forceInit } from 'src/utils/utils';
+import { forceInit } from 'src/utils/utils';
 
-export class Feature {
+export class Resource {
 	@IsString()
 	@IsNotEmpty()
 	name: string = forceInit();
@@ -21,43 +24,34 @@ export class Feature {
 	@IsMongoId({ each: true })
 	validTerrain: string[] = forceInit();
 
+	@IsMongoId({ each: true })
+	validFeatures: string[] = forceInit();
+
 	@Type(() => YieldRecord)
 	@ValidateNested({ each: true })
 	yieldModifier: YieldRecord[] = forceInit();
 
 	@Type(() => YieldRecord)
 	@ValidateNested()
-	@Nullable()
 	harvestYield: YieldRecord = forceInit();
 
-	@IsInt()
-	movementCostModifier: number = forceInit();
+	@IsMongoId()
+	harvestTech: string = forceInit();
 
-	@IsInt()
-	defenseModifier: number = forceInit();
-
-	@IsBoolean()
-	removable: boolean = forceInit();
-
-	@IsBoolean()
-	impassable: boolean = forceInit();
-
-	@IsBoolean()
-	harvestable: boolean = forceInit();
+	@IsString({ each: true })
+	otherNotes: string[] = forceInit();
 }
 
-export type MarshalledFeature = {
+export type MarshalledResource = {
 	name: string;
 	icon: string;
 	description: string;
 	addedBy: DLCString;
-	validTerrain: string[];
+	validTerrain: Terrain[];
+	validFeatures: Feature[];
 	yieldModifier: YieldRecord[];
-	harvestYield: YieldRecord | null;
-	movementCostModifier: number;
-	defenseModifier: number;
-	removable: boolean;
-	impassable: boolean;
-	harvestable: boolean;
+	harvestYield: YieldRecord;
+	harvestTech: Technology;
+	otherNotes: string[];
 };
 

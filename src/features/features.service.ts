@@ -6,7 +6,7 @@ import { DeepPartial, deepMerge, matchQuery, normalizeName, reformatName } from 
 import { Feature, MarshalledFeature } from './feature.model';
 
 @Injectable()
-export class FeaturessService {
+export class FeaturesService {
 	private _logger: ConsoleLogger = new ConsoleLogger('Features Service');
 
 	constructor(private _db: DBService) {}
@@ -53,7 +53,7 @@ export class FeaturessService {
 		if (Array.isArray(featureOrFeatures)) {
 			const features = featureOrFeatures;
 
-			return Promise.all(features.map((tech) => this.marshal(tech, hints)));
+			return Promise.all(features.map((feature) => this.marshal(feature, hints)));
 		} else {
 			const feature = featureOrFeatures;
 

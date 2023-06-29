@@ -1,9 +1,9 @@
 import { Type } from 'class-transformer';
-import { IsBoolean, IsIn, IsInt, IsMongoId, IsNotEmpty, IsOptional, IsString, ValidateNested } from 'class-validator';
+import { IsIn, IsMongoId, IsNotEmpty, IsOptional, IsString, ValidateNested } from 'class-validator';
 import { DLCString, DLC_STRINGS, YieldRecord } from 'src/utils/common';
-import { Nullable, forceInit } from 'src/utils/utils';
+import { forceInit } from 'src/utils/utils';
 
-export class CreateFeatureDTO {
+export class CreateResourceDTO {
 	@IsString()
 	@IsNotEmpty()
 	name: string = forceInit();
@@ -17,36 +17,34 @@ export class CreateFeatureDTO {
 	@IsMongoId({ each: true })
 	validTerrain: string[] = forceInit();
 
+	@IsMongoId({ each: true })
+	validFeatures: string[] = forceInit();
+
 	@Type(() => YieldRecord)
 	@ValidateNested({ each: true })
 	yieldModifier: YieldRecord[] = forceInit();
 
 	@Type(() => YieldRecord)
 	@ValidateNested()
-	@Nullable()
 	harvestYield: YieldRecord = forceInit();
 
-	@IsInt()
-	movementCostModifier: number = forceInit();
+	@IsMongoId()
+	harvestTech: string = forceInit();
 
-	@IsInt()
-	defenseModifier: number = forceInit();
-
-	@IsBoolean()
-	removable: boolean = forceInit();
-
-	@IsBoolean()
-	impassable: boolean = forceInit();
-
-	@IsBoolean()
-	harvestable: boolean = forceInit();
+	@IsString({ each: true })
+	otherNotes: string[] = forceInit();
 }
 
-export class UpdateFeatureDTO {
+export class UpdateResourceDTO {
 	@IsString()
 	@IsNotEmpty()
 	@IsOptional()
 	name?: string;
+
+	@IsString()
+	@IsNotEmpty()
+	@IsOptional()
+	icon?: string;
 
 	@IsString()
 	@IsOptional()
@@ -60,6 +58,10 @@ export class UpdateFeatureDTO {
 	@IsOptional()
 	validTerrain?: string[];
 
+	@IsMongoId({ each: true })
+	@IsOptional()
+	validFeatures?: string[];
+
 	@Type(() => YieldRecord)
 	@ValidateNested({ each: true })
 	@IsOptional()
@@ -67,28 +69,15 @@ export class UpdateFeatureDTO {
 
 	@Type(() => YieldRecord)
 	@ValidateNested()
-	@Nullable()
 	@IsOptional()
 	harvestYield?: YieldRecord;
 
-	@IsInt()
+	@IsMongoId()
 	@IsOptional()
-	movementCostModifier?: number;
+	harvestTech?: string;
 
-	@IsInt()
+	@IsString({ each: true })
 	@IsOptional()
-	defenseModifier?: number;
-
-	@IsBoolean()
-	@IsOptional()
-	removable?: boolean;
-
-	@IsBoolean()
-	@IsOptional()
-	impassable?: boolean;
-
-	@IsBoolean()
-	@IsOptional()
-	harvestable?: boolean;
+	otherNotes?: string[];
 }
 

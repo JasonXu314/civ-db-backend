@@ -24,13 +24,13 @@ import { IDPipe } from 'src/utils/pipes/id.pipe';
 import { DeepPartial, IDDTO, IDRequiredDTO, IDWithSearchDTO, NameSearchDTO } from 'src/utils/utils';
 import { CreateFeatureDTO, UpdateFeatureDTO } from './feature.dto';
 import { Feature, MarshalledFeature } from './feature.model';
-import { FeaturessService } from './features.service';
+import { FeaturesService } from './features.service';
 
 @Controller('/features')
 export class FeaturesController {
 	private _logger: ConsoleLogger;
 
-	constructor(private readonly features: FeaturessService) {
+	constructor(private readonly features: FeaturesService) {
 		this._logger = new ConsoleLogger('Features Controller');
 	}
 

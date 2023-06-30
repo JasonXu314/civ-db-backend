@@ -1,7 +1,7 @@
 import { Type } from 'class-transformer';
 import { IsBoolean, IsIn, IsInt, IsMongoId, IsNotEmpty, IsOptional, IsString, ValidateNested } from 'class-validator';
 import { DLCString, DLC_STRINGS, YieldRecord } from 'src/utils/common';
-import { Nullable, forceInit } from 'src/utils/utils';
+import { forceInit } from 'src/utils/utils';
 
 export class CreateFeatureDTO {
 	@IsString()
@@ -22,9 +22,8 @@ export class CreateFeatureDTO {
 	yieldModifier: YieldRecord[] = forceInit();
 
 	@Type(() => YieldRecord)
-	@ValidateNested()
-	@Nullable()
-	harvestYield: YieldRecord = forceInit();
+	@ValidateNested({ each: true })
+	harvestYield: YieldRecord[] = forceInit();
 
 	@IsInt()
 	movementCostModifier: number = forceInit();
@@ -67,9 +66,8 @@ export class UpdateFeatureDTO {
 
 	@Type(() => YieldRecord)
 	@ValidateNested()
-	@Nullable()
 	@IsOptional()
-	harvestYield?: YieldRecord;
+	harvestYield?: YieldRecord[];
 
 	@IsInt()
 	@IsOptional()

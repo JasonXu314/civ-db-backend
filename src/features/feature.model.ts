@@ -1,7 +1,7 @@
 import { Type } from 'class-transformer';
 import { IsBoolean, IsIn, IsInt, IsMongoId, IsNotEmpty, IsString, ValidateNested } from 'class-validator';
 import { DLCString, DLC_STRINGS, YieldRecord } from 'src/utils/common';
-import { Nullable, forceInit } from 'src/utils/utils';
+import { forceInit } from 'src/utils/utils';
 
 export class Feature {
 	@IsString()
@@ -26,9 +26,8 @@ export class Feature {
 	yieldModifier: YieldRecord[] = forceInit();
 
 	@Type(() => YieldRecord)
-	@ValidateNested()
-	@Nullable()
-	harvestYield: YieldRecord = forceInit();
+	@ValidateNested({ each: true })
+	harvestYield: YieldRecord[] = forceInit();
 
 	@IsInt()
 	movementCostModifier: number = forceInit();
@@ -53,7 +52,7 @@ export type MarshalledFeature = {
 	addedBy: DLCString;
 	validTerrain: string[];
 	yieldModifier: YieldRecord[];
-	harvestYield: YieldRecord | null;
+	harvestYield: YieldRecord[];
 	movementCostModifier: number;
 	defenseModifier: number;
 	removable: boolean;
